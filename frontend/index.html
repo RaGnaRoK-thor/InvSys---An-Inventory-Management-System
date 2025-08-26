@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - Login/Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Font - Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+</head>
+<body>
+    <div class="container">
+        <h1>InvSys</h1>
+
+        <div id="message-box" class="message" style="display:none;"></div>
+
+        <div id="login-section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="login-employee-id">Employee ID:</label>
+                <input type="text" id="login-employee-id" name="employee_id" required autocomplete="username">
+
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required autocomplete="current-password">
+
+                <button type="submit">Login</button>
+            </form>
+            <p class="form-toggle">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+        </div>
+
+        <div id="signup-section" style="display:none;">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <label for="signup-employee-id">Employee ID:</label>
+                <input type="text" id="signup-employee-id" name="employee_id" required autocomplete="username">
+
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" name="password" required autocomplete="new-password">
+
+                <label for="signup-confirm-password">Confirm Password:</label>
+                <input type="password" id="signup-confirm-password" name="confirm_password" required autocomplete="new-password">
+
+                <button type="submit">Sign Up</button>
+            </form>
+            <p class="form-toggle">Already have an account? <a href="#" id="show-login">Login</a></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
