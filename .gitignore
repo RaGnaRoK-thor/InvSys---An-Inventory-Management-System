@@ -1,0 +1,5 @@
+# Ignore the SQLite database file
+backend/inventory.db
+
+# Ignore Python cache files
+backend/__pycache__/
