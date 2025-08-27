@@ -16,6 +16,9 @@
     --card-background: #252525;
     --table-header-background: #3a3a3a;
     --table-row-hover: #333;
+    --sidebar-width: 250px;
+    --sidebar-background: #151515;
+    --sidebar-item-hover: #1f1f1f;
 }
 
 body {
@@ -24,25 +27,134 @@ body {
     color: var(--text-color);
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align items to the start, not center, for better scrolling */
-    min-height: 100vh;
+    display: flex; /* Main body is a flex container now */
     box-sizing: border-box;
-    overflow-y: auto; /* Allow scrolling for content that exceeds viewport height */
+    min-height: 100vh;
 }
 
+/* New: Dashboard Layout */
+.dashboard-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    overflow-y: auto; /* Allow scrolling within the main content */
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    background-color: var(--sidebar-background);
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sidebar-title {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1; /* Pushes the logout button to the bottom */
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    padding: 1rem;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-item i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.nav-item:hover {
+    background-color: var(--sidebar-item-hover);
+    color: var(--text-color);
+}
+
+.nav-item.active {
+    background-color: var(--card-background);
+    color: var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Overwrite default button styles for sidebar */
+.logout-button {
+    background-color: #dc3545; /* Red for logout */
+    color: white;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    margin-top: 2rem;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+/* General Container Styling */
 .container {
     background-color: var(--card-background);
-    padding: 2.5rem; /* Increased padding */
-    border-radius: 12px; /* More rounded corners */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Enhanced shadow */
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     width: 100%;
-    max-width: 900px; /* Max width for content */
-    margin: 2rem; /* Margin around the container */
+    max-width: 900px;
+    margin: 0 auto; /* Center the container in the main content area */
     box-sizing: border-box;
 }
 
+.subtitle {
+    color: var(--secondary-color);
+    text-align: center;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+}
+
+/* New: Hide all content sections by default, and show only the active one */
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Existing styles for forms, tables, etc. follow */
 h1, h2, h3 {
     color: var(--primary-color);
     text-align: center;
@@ -114,9 +226,15 @@ button:active {
 
 .button-group {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; /* Align buttons to the right */
     gap: 1rem;
     margin-top: 1.5rem;
+}
+
+.button-group button {
+    margin-top: 0; /* Override default button margin */
+    flex-grow: 1;
+    max-width: 120px;
 }
 
 .message {
@@ -125,7 +243,7 @@ button:active {
     border-radius: 8px;
     text-align: center;
     font-weight: bold;
-    word-wrap: break-word; /* Ensure messages wrap */
+    word-wrap: break-word;
 }
 
 .success {
@@ -192,31 +310,7 @@ button:active {
     margin: 0.5rem 0 0;
 }
 
-.logout-button {
-    background-color: #dc3545; /* Red for logout */
-    margin-top: 2rem;
-    display: block;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.logout-button:hover {
-    background-color: #c82333;
-}
-
 /* Inventory Management Section */
-.inventory-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.inventory-section h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
 .crud-container {
     display: flex;
     flex-wrap: wrap;
@@ -230,7 +324,7 @@ button:active {
     padding: 1.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     flex: 1;
-    min-width: 300px; /* Minimum width for form cards */
+    min-width: 300px;
 }
 
 .crud-form-card h3, .data-table-card h3 {
@@ -240,23 +334,10 @@ button:active {
     text-align: center;
 }
 
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end; /* Align buttons to the right */
-    margin-top: 1.5rem;
-}
-
-.form-actions button {
-    margin-top: 0; /* Override default button margin */
-    flex-grow: 1;
-    max-width: 120px;
-}
-
 .data-table-card {
-    flex-basis: 100%; /* Take full width below medium screens */
+    flex-basis: 100%;
     margin-top: 2rem;
-    overflow-x: auto; /* Enable horizontal scrolling for tables */
+    overflow-x: auto;
 }
 
 table {
@@ -281,7 +362,7 @@ th {
 }
 
 tr:nth-child(even) {
-    background-color: rgba(var(--primary-color), 0.05); /* Slight tint for even rows */
+    background-color: rgba(var(--primary-color), 0.05);
 }
 
 tr:hover {
@@ -298,7 +379,7 @@ tr:hover {
     padding: 0.5rem 0.8rem;
     font-size: 0.8rem;
     margin-top: 0;
-    box-shadow: none; /* No shadow for action buttons */
+    box-shadow: none;
 }
 
 .action-buttons .edit-btn {
@@ -323,17 +404,17 @@ tr:hover {
     font-weight: bold;
 }
 
-/* Modal styles */
+/* Modal styles - not used in this version but kept for future use */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
 }
@@ -368,48 +449,56 @@ tr:hover {
     cursor: pointer;
 }
 
-/* Toggle for forms in dashboard */
-.toggle-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.toggle-buttons button {
-    background-color: var(--input-background);
-    color: var(--secondary-color);
-    border: 1px solid var(--border-color);
-    padding: 0.8rem 1.2rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-}
-
-.toggle-buttons button.active {
-    background-color: var(--button-background);
-    color: white;
-    border-color: var(--button-background);
-}
-
-.toggle-buttons button:hover:not(.active) {
-    background-color: var(--card-background);
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.form-section {
-    display: none; /* Hide all form sections by default */
-}
-
-.form-section.active {
-    display: block; /* Show active form section */
-}
-
 /* Responsive Adjustments */
 @media (max-width: 768px) {
+    .dashboard-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 1rem 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sidebar-nav {
+        flex-direction: row;
+        justify-content: space-around;
+        flex-grow: 0;
+    }
+    
+    .nav-item {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+    
+    .nav-item i {
+        display: none; /* Hide icons on mobile for space */
+    }
+    
+    .logout-button {
+        background-color: var(--error-color);
+        color: white;
+        padding: 0.9rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .logout-button:hover {
+        background-color: #c82333;
+        transform: none;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
     .container {
-        margin: 1rem;
+        margin: 0;
         padding: 1.5rem;
     }
 

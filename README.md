@@ -1,5 +1,5 @@
 
-# 📦 Inventory Management System
+# 📦InvSys - Inventory Management System
 
 A simple, locally runnable Inventory Management System built with Python Flask for the backend and plain HTML, CSS, and JavaScript for the frontend. This application helps track employees, suppliers, categories, and products, including stock levels and restock alerts.
 

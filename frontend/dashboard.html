@@ -3,213 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Dashboard</title>
+    <title>InvSys - Manage your data here</title>
     <link rel="stylesheet" href="style.css">
     <!-- Google Font - Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
-    <!-- Font Awesome for icons (optional, but good for action buttons) -->
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Dashboard</h1>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <h2 class="sidebar-title">InvSys</h2>
+            <nav class="sidebar-nav">
+                <button id="show-dashboard-btn" class="nav-item active">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button id="show-supplier-btn" class="nav-item">
+                    <i class="fas fa-truck"></i> Suppliers
+                </button>
+                <button id="show-category-btn" class="nav-item">
+                    <i class="fas fa-tags"></i> Categories
+                </button>
+                <button id="show-product-btn" class="nav-item">
+                    <i class="fas fa-box"></i> Products
+                </button>
+            </nav>
+        </aside>
 
-        <div id="message-box" class="message" style="display:none;"></div>
-
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h3>Total Employees</h3>
-                <p id="total-employees">0</p>
-            </div>
-            <div class="dashboard-card">
-                <h3>Total Categories</h3>
-                <p id="total-categories">0</p>
-            </div>
-            <div class="dashboard-card">
-                <h3>Total Suppliers</h3>
-                <p id="total-suppliers">0</p>
-            </div>
-            <div class="dashboard-card">
-                <h3>Total Products</h3>
-                <p id="total-products">0</p>
-            </div>
-            <div class="dashboard-card">
-                <h3>Products Needing Restock</h3>
-                <p id="products-needing-restock">0</p>
-            </div>
-        </div>
-
-        <button id="logout-button" class="logout-button">Logout</button>
-
-        <div class="inventory-section">
-            <h2>InvSys : Manage Your Data Here</h2>
-
-            <div class="toggle-buttons">
-                <button id="show-supplier-btn" class="active">Suppliers</button>
-                <button id="show-category-btn">Categories</button>
-                <button id="show-product-btn">Products</button>
-            </div>
-
-            <!-- Supplier Management Section -->
-            <div id="supplier-section" class="form-section active">
-                <div class="crud-container">
-                    <div class="crud-form-card">
-                        <h3>Add/Update Supplier</h3>
-                        <form id="supplier-form">
-                            <input type="hidden" id="supplier-id">
-                            <label for="supplier-name">Supplier Name:</label>
-                            <input type="text" id="supplier-name" name="name" required>
-
-                            <label for="supplier-contact-person">Contact Person:</label>
-                            <input type="text" id="supplier-contact-person" name="contact_person">
-
-                            <label for="supplier-phone">Phone:</label>
-                            <input type="text" id="supplier-phone" name="phone">
-
-                            <label for="supplier-email">Email:</label>
-                            <input type="email" id="supplier-email" name="email">
-
-                            <div class="form-actions">
-                                <button type="submit" id="add-update-supplier-btn">Add Supplier</button>
-                                <button type="button" id="clear-supplier-form-btn" class="action-buttons edit-btn">Clear Form</button>
-                            </div>
-                        </form>
+        <main class="main-content">
+            <div class="container">
+                <h1 id="main-title">Dashboard</h1>
+                <p class="subtitle" id="main-subtitle">Overview of your inventory system</p>
+                <div id="message-box" class="message" style="display:none;"></div>
+                
+                <!-- Dashboard Summary Section (initial view) -->
+                <div id="dashboard-section" class="content-section active">
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Total Employees</h3>
+                            <p id="total-employees">0</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Total Categories</h3>
+                            <p id="total-categories">0</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Total Suppliers</h3>
+                            <p id="total-suppliers">0</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Total Products</h3>
+                            <p id="total-products">0</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Products Needing Restock</h3>
+                            <p id="products-needing-restock">0</p>
+                        </div>
                     </div>
+                    <button id="logout-button" class="logout-button">Logout</button>
+                </div>
 
-                    <div class="data-table-card">
-                        <h3>All Suppliers</h3>
-                        <table id="suppliers-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Contact</th>
-                                    <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Supplier data will be loaded here -->
-                            </tbody>
-                        </table>
+                <!-- Supplier Management Section -->
+                <div id="supplier-section" class="content-section">
+                    <div class="crud-container">
+                        <div class="crud-form-card">
+                            <h3>Add/Update Supplier</h3>
+                            <form id="supplier-form">
+                                <input type="hidden" id="supplier-id">
+                                <label for="supplier-name">Supplier Name:</label>
+                                <input type="text" id="supplier-name" name="name" required>
+    
+                                <label for="supplier-contact-person">Contact Person:</label>
+                                <input type="text" id="supplier-contact-person" name="contact_person">
+    
+                                <label for="supplier-phone">Phone:</label>
+                                <input type="text" id="supplier-phone" name="phone">
+    
+                                <label for="supplier-email">Email:</label>
+                                <input type="email" id="supplier-email" name="email">
+    
+                                <div class="form-actions">
+                                    <button type="submit" id="add-update-supplier-btn">Add Supplier</button>
+                                    <button type="button" id="clear-supplier-form-btn" class="action-buttons edit-btn">Clear Form</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="data-table-card">
+                            <h3>All Suppliers</h3>
+                            <table id="suppliers-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Contact</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Supplier data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Category Management Section -->
+                <div id="category-section" class="content-section">
+                    <div class="crud-container">
+                        <div class="crud-form-card">
+                            <h3>Add/Update Category</h3>
+                            <form id="category-form">
+                                <input type="hidden" id="category-id">
+                                <label for="category-name">Category Name:</label>
+                                <input type="text" id="category-name" name="name" required>
+    
+                                <label for="category-description">Description:</label>
+                                <textarea id="category-description" name="description" rows="3"></textarea>
+    
+                                <div class="form-actions">
+                                    <button type="submit" id="add-update-category-btn">Add Category</button>
+                                    <button type="button" id="clear-category-form-btn" class="action-buttons edit-btn">Clear Form</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="data-table-card">
+                            <h3>All Categories</h3>
+                            <table id="categories-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Category data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Product Management Section -->
+                <div id="product-section" class="content-section">
+                    <div class="crud-container">
+                        <div class="crud-form-card">
+                            <h3>Add/Update Product</h3>
+                            <form id="product-form">
+                                <input type="hidden" id="product-id">
+                                <label for="product-name">Product Name:</label>
+                                <input type="text" id="product-name" name="name" required>
+    
+                                <label for="product-description">Description:</label>
+                                <textarea id="product-description" name="description" rows="3"></textarea>
+    
+                                <label for="product-price">Price:</label>
+                                <input type="number" id="product-price" name="price" step="0.01" required>
+    
+                                <label for="product-currency">Currency:</label>
+                                <select id="product-currency" name="currency_code" required>
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+    
+                                <label for="product-stock">Current Stock:</label>
+                                <input type="number" id="product-stock" name="stock" required>
+    
+                                <label for="product-safe-stock">Safe Stock Level:</label>
+                                <input type="number" id="product-safe-stock" name="safe_stock" required>
+    
+                                <label for="product-category">Category:</label>
+                                <select id="product-category" name="category_id">
+                                    <option value="">-- Select Category --</option>
+                                    <!-- Categories will be loaded here -->
+                                </select>
+    
+                                <label for="product-supplier">Supplier:</label>
+                                <select id="product-supplier" name="supplier_id">
+                                    <option value="">-- Select Supplier --</option>
+                                    <!-- Suppliers will be loaded here -->
+                                </select>
+    
+                                <div class="form-actions">
+                                    <button type="submit" id="add-update-product-btn">Add Product</button>
+                                    <button type="button" id="clear-product-form-btn" class="action-buttons edit-btn">Clear Form</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="data-table-card">
+                            <h3>All Products</h3>
+                            <table id="products-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Currency</th>
+                                        <th>Current Stock</th>
+                                        <th>Safe Stock</th>
+                                        <th>Category</th>
+                                        <th>Supplier</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Product data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Category Management Section -->
-            <div id="category-section" class="form-section">
-                <div class="crud-container">
-                    <div class="crud-form-card">
-                        <h3>Add/Update Category</h3>
-                        <form id="category-form">
-                            <input type="hidden" id="category-id">
-                            <label for="category-name">Category Name:</label>
-                            <input type="text" id="category-name" name="name" required>
-
-                            <label for="category-description">Description:</label>
-                            <textarea id="category-description" name="description" rows="3"></textarea>
-
-                            <div class="form-actions">
-                                <button type="submit" id="add-update-category-btn">Add Category</button>
-                                <button type="button" id="clear-category-form-btn" class="action-buttons edit-btn">Clear Form</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="data-table-card">
-                        <h3>All Categories</h3>
-                        <table id="categories-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Category data will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Management Section -->
-            <div id="product-section" class="form-section">
-                <div class="crud-container">
-                    <div class="crud-form-card">
-                        <h3>Add/Update Product</h3>
-                        <form id="product-form">
-                            <input type="hidden" id="product-id">
-                            <label for="product-name">Product Name:</label>
-                            <input type="text" id="product-name" name="name" required>
-
-                            <label for="product-description">Description:</label>
-                            <textarea id="product-description" name="description" rows="3"></textarea>
-
-                            <label for="product-price">Price:</label>
-                            <input type="number" id="product-price" name="price" step="0.01" required>
-
-                            <label for="product-currency">Currency:</label>
-                            <select id="product-currency" name="currency_code" required>
-                                <!-- Options will be populated by JavaScript -->
-                            </select>
-
-                            <label for="product-stock">Current Stock:</label> <!-- Changed label for clarity -->
-                            <input type="number" id="product-stock" name="stock" required>
-
-                            <label for="product-safe-stock">Safe Stock Level:</label> <!-- New Input Field -->
-                            <input type="number" id="product-safe-stock" name="safe_stock" required>
-
-                            <label for="product-category">Category:</label>
-                            <select id="product-category" name="category_id">
-                                <option value="">-- Select Category --</option>
-                                <!-- Categories will be loaded here -->
-                            </select>
-
-                            <label for="product-supplier">Supplier:</label>
-                            <select id="product-supplier" name="supplier_id">
-                                <option value="">-- Select Supplier --</option>
-                                <!-- Suppliers will be loaded here -->
-                            </select>
-
-                            <div class="form-actions">
-                                <button type="submit" id="add-update-product-btn">Add Product</button>
-                                <button type="button" id="clear-product-form-btn" class="action-buttons edit-btn">Clear Form</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="data-table-card">
-                        <h3>All Products</h3>
-                        <table id="products-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Price</th>
-                                    <th>Currency</th>
-                                    <th>Current Stock</th> <!-- Changed header -->
-                                    <th>Safe Stock</th> <!-- New Column -->
-                                    <th>Category</th>
-                                    <th>Supplier</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Product data will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- End inventory-section -->
-    </div> <!-- End container -->
-
+        </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

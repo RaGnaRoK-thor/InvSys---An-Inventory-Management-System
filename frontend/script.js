@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
     const logoutButton = document.getElementById('logout-button');
 
+    // Main title elements
+    const mainTitle = document.getElementById('main-title');
+    const mainSubtitle = document.getElementById('main-subtitle');
+
     // Dashboard elements
     const totalEmployees = document.getElementById('total-employees');
     const totalCategories = document.getElementById('total-categories');
@@ -19,9 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const productsNeedingRestock = document.getElementById('products-needing-restock');
 
     // Inventory management elements
+    const showDashboardBtn = document.getElementById('show-dashboard-btn');
     const showSupplierBtn = document.getElementById('show-supplier-btn');
     const showCategoryBtn = document.getElementById('show-category-btn');
     const showProductBtn = document.getElementById('show-product-btn');
+    const dashboardSection = document.getElementById('dashboard-section');
     const supplierSection = document.getElementById('supplier-section');
     const categorySection = document.getElementById('category-section');
     const productSection = document.getElementById('product-section');
@@ -37,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const productCategorySelect = document.getElementById('product-category');
     const productSupplierSelect = document.getElementById('product-supplier');
     const productCurrencySelect = document.getElementById('product-currency');
-    const productSafeStockInput = document.getElementById('product-safe-stock'); // New: Safe Stock Input
+    const productSafeStockInput = document.getElementById('product-safe-stock');
 
     // --- Global Currency Data ---
     // A comprehensive list of common global currencies and their symbols
@@ -201,10 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Dashboard & Inventory Management Logic (for dashboard.html) ---
     if (logoutButton) { // Only run this block on dashboard.html
-        // Check if user is logged in (session is managed by Flask)
-        // If the user isn't logged in, Flask's @login_required decorator will redirect
-        // So, if we are here, we are logged in.
-
         logoutButton.addEventListener('click', async () => {
             try {
                 await apiRequest('/api/logout', 'POST');
@@ -232,35 +234,50 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- Tabbed Navigation for Inventory Sections ---
-        const formSections = {
-            'supplier': supplierSection,
-            'category': categorySection,
-            'product': productSection
+        // --- Sidebar Navigation Logic ---
+        const contentSections = {
+            'dashboard': { element: dashboardSection, title: 'Dashboard', subtitle: 'Overview of your inventory system' },
+            'supplier': { element: supplierSection, title: 'Supplier Management', subtitle: 'Add, update, and view your suppliers' },
+            'category': { element: categorySection, title: 'Category Management', subtitle: 'Organize your products with categories' },
+            'product': { element: productSection, title: 'Product Management', subtitle: 'Track all your products in one place' }
         };
         const sectionButtons = {
+            'dashboard': showDashboardBtn,
             'supplier': showSupplierBtn,
             'category': showCategoryBtn,
             'product': showProductBtn
         };
 
         function showSection(sectionName) {
-            Object.keys(formSections).forEach(key => {
-                formSections[key].classList.remove('active');
+            // Hide all sections and deactivate all buttons
+            Object.keys(contentSections).forEach(key => {
+                contentSections[key].element.classList.remove('active');
                 sectionButtons[key].classList.remove('active');
             });
-            formSections[sectionName].classList.add('active');
+            // Show the requested section and activate its button
+            contentSections[sectionName].element.classList.add('active');
             sectionButtons[sectionName].classList.add('active');
-            // Refresh data when section changes
-            if (sectionName === 'supplier') loadSuppliers();
-            if (sectionName === 'category') loadCategories();
-            if (sectionName === 'product') {
+            
+            // Update the main title and subtitle
+            mainTitle.textContent = contentSections[sectionName].title;
+            mainSubtitle.textContent = contentSections[sectionName].subtitle;
+
+            // Load data specific to the new section
+            if (sectionName === 'dashboard') {
+                loadDashboardSummary();
+            } else if (sectionName === 'supplier') {
+                loadSuppliers();
+            } else if (sectionName === 'category') {
+                loadCategories();
+            } else if (sectionName === 'product') {
                 loadProducts();
-                populateProductDropdowns(); // Populates categories and suppliers
+                populateProductDropdowns();
                 populateCurrencyDropdown();
             }
         }
-
+        
+        // --- Event Listeners for Sidebar Buttons ---
+        showDashboardBtn.addEventListener('click', () => showSection('dashboard'));
         showSupplierBtn.addEventListener('click', () => showSection('supplier'));
         showCategoryBtn.addEventListener('click', () => showSection('category'));
         showProductBtn.addEventListener('click', () => showSection('product'));
@@ -270,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async function loadSuppliers() {
             try {
                 const suppliers = await apiRequest('/api/suppliers', 'GET');
-                suppliersTableBody.innerHTML = ''; // Clear existing
+                suppliersTableBody.innerHTML = '';
                 suppliers.forEach(supplier => {
                     const row = suppliersTableBody.insertRow();
                     row.insertCell().textContent = supplier.id;
@@ -286,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
                 attachSupplierEventListeners();
-                populateProductDropdowns(); // Update product dropdowns after loading suppliers
             } catch (error) {
                 // Error handled by apiRequest
             }
@@ -330,15 +346,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 let response;
-                if (supplierId) { // Update existing supplier
+                if (supplierId) {
                     response = await apiRequest(`/api/suppliers/${supplierId}`, 'PUT', data);
-                    document.getElementById('add-update-supplier-btn').textContent = 'Add Supplier'; // Reset button text
-                } else { // Add new supplier
+                    document.getElementById('add-update-supplier-btn').textContent = 'Add Supplier';
+                } else {
                     response = await apiRequest('/api/suppliers', 'POST', data);
                 }
                 showMessage(response.message, 'success');
                 supplierForm.reset();
-                document.getElementById('supplier-id').value = ''; // Clear hidden ID
+                document.getElementById('supplier-id').value = '';
                 loadSuppliers();
                 loadDashboardSummary();
             } catch (error) {
@@ -356,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async function loadCategories() {
             try {
                 const categories = await apiRequest('/api/categories', 'GET');
-                categoriesTableBody.innerHTML = ''; // Clear existing
+                categoriesTableBody.innerHTML = '';
                 categories.forEach(category => {
                     const row = categoriesTableBody.insertRow();
                     row.insertCell().textContent = category.id;
@@ -370,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 });
                 attachCategoryEventListeners();
-                populateProductDropdowns(); // Update product dropdowns after loading categories
             } catch (error) {
                 // Error handled by apiRequest
             }
@@ -412,15 +427,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 let response;
-                if (categoryId) { // Update existing category
+                if (categoryId) {
                     response = await apiRequest(`/api/categories/${categoryId}`, 'PUT', data);
-                    document.getElementById('add-update-category-btn').textContent = 'Add Category'; // Reset button text
-                } else { // Add new category
+                    document.getElementById('add-update-category-btn').textContent = 'Add Category';
+                } else {
                     response = await apiRequest('/api/categories', 'POST', data);
                 }
                 showMessage(response.message, 'success');
                 categoryForm.reset();
-                document.getElementById('category-id').value = ''; // Clear hidden ID
+                document.getElementById('category-id').value = '';
                 loadCategories();
                 loadDashboardSummary();
             } catch (error) {
@@ -438,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async function loadProducts() {
             try {
                 const products = await apiRequest('/api/products', 'GET');
-                productsTableBody.innerHTML = ''; // Clear existing
+                productsTableBody.innerHTML = '';
                 products.forEach(product => {
                     const row = productsTableBody.insertRow();
                     row.insertCell().textContent = product.id;
@@ -448,10 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     row.insertCell().textContent = product.currency_code;
                     const stockCell = row.insertCell();
                     stockCell.textContent = product.stock;
-                    row.insertCell().textContent = product.safe_stock; // New: Display safe stock
+                    row.insertCell().textContent = product.safe_stock;
 
-                    // Flag products needing restock: current stock is less than 50% of safe stock
-                    // Also ensure safe_stock is not 0 to avoid division by zero or nonsensical results
                     if (product.safe_stock > 0 && product.stock < (product.safe_stock * 0.5)) {
                         stockCell.classList.add('low-stock');
                     }
@@ -506,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function populateCurrencyDropdown() {
-            productCurrencySelect.innerHTML = ''; // Clear existing options
+            productCurrencySelect.innerHTML = '';
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '-- Select Currency --';
@@ -528,14 +541,14 @@ document.addEventListener('DOMContentLoaded', () => {
         function attachProductEventListeners() {
             document.querySelectorAll('#products-table .edit-btn').forEach(button => {
                 button.onclick = (e) => {
-                    const { id, name, description, price, currencyCode, stock, safeStock, categoryId, supplierId } = e.currentTarget.dataset; // New: get safeStock
+                    const { id, name, description, price, currencyCode, stock, safeStock, categoryId, supplierId } = e.currentTarget.dataset;
                     document.getElementById('product-id').value = id;
                     document.getElementById('product-name').value = name;
                     document.getElementById('product-description').value = description;
                     document.getElementById('product-price').value = price;
                     document.getElementById('product-currency').value = currencyCode;
                     document.getElementById('product-stock').value = stock;
-                    document.getElementById('product-safe-stock').value = safeStock; // New: Set safe stock value
+                    document.getElementById('product-safe-stock').value = safeStock;
                     document.getElementById('product-category').value = categoryId;
                     document.getElementById('product-supplier').value = supplierId;
                     document.getElementById('add-update-product-btn').textContent = 'Update Product';
@@ -565,28 +578,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(productForm);
             const data = Object.fromEntries(formData.entries());
 
-            // Convert numeric fields to appropriate types
             data.price = parseFloat(data.price);
             data.stock = parseInt(data.stock, 10);
-            data.safe_stock = parseInt(data.safe_stock, 10); // New: Convert safe_stock to integer
+            data.safe_stock = parseInt(data.safe_stock, 10);
 
-            // Ensure foreign keys are null if empty string
             data.category_id = data.category_id === "" ? null : parseInt(data.category_id, 10);
             data.supplier_id = data.supplier_id === "" ? null : parseInt(data.supplier_id, 10);
             data.currency_code = data.currency_code || 'USD';
 
             try {
                 let response;
-                if (productId) { // Update existing product
+                if (productId) {
                     response = await apiRequest(`/api/products/${productId}`, 'PUT', data);
-                    document.getElementById('add-update-product-btn').textContent = 'Add Product'; // Reset button text
-                } else { // Add new product
+                    document.getElementById('add-update-product-btn').textContent = 'Add Product';
+                } else {
                     response = await apiRequest('/api/products', 'POST', data);
                 }
                 showMessage(response.message, 'success');
                 productForm.reset();
-                document.getElementById('product-id').value = ''; // Clear hidden ID
-                populateCurrencyDropdown(); // Reset currency dropdown to default
+                document.getElementById('product-id').value = '';
+                populateCurrencyDropdown();
                 loadProducts();
                 loadDashboardSummary();
             } catch (error) {
@@ -598,17 +609,13 @@ document.addEventListener('DOMContentLoaded', () => {
             productForm.reset();
             document.getElementById('product-id').value = '';
             document.getElementById('add-update-product-btn').textContent = 'Add Product';
-            populateCurrencyDropdown(); // Reset currency dropdown to default
+            populateCurrencyDropdown();
         });
 
 
-        // --- Initial Load for Dashboard ---
+        // --- Initial Load Logic ---
+        // This is the initial setup. We start with the dashboard view.
         loadDashboardSummary();
-        loadSuppliers();
-        loadCategories();
-        loadProducts();
-        populateProductDropdowns(); // Populate categories and suppliers
-        populateCurrencyDropdown();
+        showSection('dashboard');
     }
 });
-
